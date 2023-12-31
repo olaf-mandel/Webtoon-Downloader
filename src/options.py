@@ -42,21 +42,38 @@ class Options():
         self.parser.add_argument('-d', '--dest', type=str,
                             help='download parent folder path', required= False)
         self.parser.add_argument('--images-format', required=False,
-                            help='image format of downloaded images, available: (png, jpg)', 
-                            choices=['jpg', 'png'], default='jpg')
+                            help='image format of downloaded images, available: '
+                                 '(native, png, jpg)',
+                            choices=['native', 'jpg', 'png'], default='native')
+        self.parser.add_argument('--export-extra-media', required=False,
+                            help='download extra media like overview images, '
+                            'thumbnails or music',
+                            action='store_true', default=False)
         self.parser.add_argument('--seperate', required=False,
-                            help='[DEPRECATED] download each chapter in seperate folders',
+                            help='[DEPRECATED] download each chapter in separate folders',
                             action='store_true', default=False)
         self.parser.add_argument('--separate', required=False,
-                            help='download each chapter in seperate folders',
+                            help='download each chapter in separate folders',
                             action='store_true', default=False)
+        self.parser.add_argument('--export-texts', required=False,
+                            help=('export texts like series summary, chapter name or author '
+                                  'notes into additional files'),
+                            action='store_true', default=False)
+        self.parser.add_argument('--export-format', required=False,
+                            help='format to store exported texts in, available: (all, json, text)',
+                            choices=['all', 'json', 'text'], default='json')
         self.parser.add_argument('--readme', '-r', help=('displays readme file content for '
                             'more help details'), required=False, action='store_true')
         self.parser._positionals.title = "commands"
 
     def print_readme(self):
-        parent_path = pathlib.Path(__file__).parent.parent.resolve()     
-        with open(os.path.join(parent_path, "README.md")) as readme:
+        script_dir = pathlib.Path(__file__).parent
+        # Path as for an installed module
+        readme_path = script_dir.joinpath('data', 'README.md').resolve()
+        if not os.path.exists(readme_path):
+            # Fallback if executed from project-directory
+            readme_path = script_dir.parent.joinpath('README.md').resolve()
+        with open(readme_path) as readme:
             markdown = Markdown(readme.read())
             self.console.print(markdown)
             return
