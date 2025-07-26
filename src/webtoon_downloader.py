@@ -320,7 +320,8 @@ def get_background_url(style: str):
     --------
         The found URL or None if not found.
     """
-    m = re.match('background:[^;]*url\((?P<URL>[^\)]*)\)', style)
+    m = re.match('background:[^;]*url\((?P<Q>[\'"]?)(?P<URL>[^\)]*)(?P=Q)\)',
+                 style)
     if m is None:
         return None
     return m.group('URL')
