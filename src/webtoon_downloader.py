@@ -177,6 +177,22 @@ class TextExporter:
             if notes is not None:
                 TextExporter._write_text(prefix + "notes.txt", notes)
 
+    def add_media_counts(self, chapter: int, num_images: int,
+                         num_thumbnails: int, num_music: int):
+        self.data_is_unchanged &= (chapter in self.data['chapters']
+                and 'num_images' in self.data['chapters'][chapter]
+                and self.data['chapters'][chapter]['num_images'] == num_images
+                and 'num_thumbnails' in self.data['chapters'][chapter]
+                and self.data['chapters'][chapter]['num_thumbnails']
+                    == num_thumbnails
+                and 'num_music' in self.data['chapters'][chapter]
+                and self.data['chapters'][chapter]['num_music'] == num_music)
+        if chapter not in self.data['chapters']:
+            self.data['chapters'][chapter] = { }
+        self.data['chapters'][chapter]['num_images'] = num_images
+        self.data['chapters'][chapter]['num_thumbnails'] = num_thumbnails
+        self.data['chapters'][chapter]['num_music'] = num_music
+
     def write_data(self):
         if self.write_json:
             name = os.path.join(self.dest, "info.json")
@@ -957,12 +973,17 @@ def download_chapter(
     img_urls = extract_img_urls(soup)
     if not os.path.exists(dest):
         os.makedirs(dest)
+    music = get_chapter_music(soup, img_urls)
     if exporter:
         exporter.add_chapter_texts(
                 chapter=chapter_info.chapter_number,
                 title=get_chapter_title(soup),
                 notes=get_chapter_notes(soup))
-    music = get_chapter_music(soup, img_urls)
+        exporter.add_media_counts(
+                chapter=chapter_info.chapter_number,
+                num_images=len(img_urls),
+                num_thumbnails=(1 if extra_media else 0),
+                num_music=(len(music) if extra_media else 0))
     if extra_media:
         num_downloads = len(img_urls) + 1 + len(music)
     else:
