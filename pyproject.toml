@@ -35,6 +35,7 @@ Repository = 'https://github.com/Zehina/Webtoon-Downloader.git'
 
 [project.scripts]
 webtoon-downloader = 'Webtoon_Downloader.webtoon_downloader:main'
+webtoon-viewer = 'Webtoon_Downloader.webtoon_viewer:main'
 
 [tool.setuptools]
 include-package-data = false

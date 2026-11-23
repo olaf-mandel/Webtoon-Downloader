@@ -153,6 +153,14 @@ py webtoon_downloader.py --help
   <img src="imgs/help.svg">
 </p>
 
+### Reading downloaded series
+
+`webtoon-viewer` turns a downloaded series directory (either layout, with or without extra media and texts) into static HTML pages: an `index.html` with the chapter list and one page per chapter, with previous/next navigation, a strip of nearby chapters and the author notes.
+```ps
+$ webtoon-viewer [dest] [-o <output dir>] [--remux-music]
+```
+Music files are MPEG-TS streams, which most browsers cannot play directly; `--remux-music` uses `ffmpeg` to put each into an `.m4a` file next to it. Music only plays after you switch it on with the button in the chapter toolbar.
+
 
 <!-- CONTRIBUTING -->
 ## Contributing
